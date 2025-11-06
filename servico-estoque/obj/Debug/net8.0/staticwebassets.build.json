@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "yBzX8mkBhNC091vZ1NJKNZVzeOrDvsPNbMiz8EPIlXc=",
+  "Source": "servico-estoque",
+  "BasePath": "_content/servico-estoque",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

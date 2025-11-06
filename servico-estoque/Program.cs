@@ -1,44 +1,54 @@
+// Localização: servico-estoque/Program.cs
+// (Substitua todo o conteúdo do seu Program.cs por este)
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// --- INÍCIO DA CONFIGURAÇÃO DE SERVIÇOS ---
+
+// Adiciona o serviço de Controladores (nossos endpoints da API)
+builder.Services.AddControllers();
+
+// Adiciona o Swagger/OpenAPI para documentação e teste da API
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// --- IMPORTANTE: Configuração do CORS ---
+// Isso permite que o seu frontend Angular (que rodará em localhost:4200)
+// possa "conversar" com este backend (que rodará em localhost:xxxx).
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // A porta padrão do Angular
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+// --- FIM DA CONFIGURAÇÃO DE SERVIÇOS ---
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// --- INÍCIO DA CONFIGURAÇÃO DO PIPELINE HTTP ---
+
+// Configura o Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// Redireciona de HTTP para HTTPS (boa prática)
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// --- IMPORTANTE: Habilita o CORS ---
+app.UseCors("AllowAngularApp"); // Aplica a política que definimos
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+// Habilita o uso de Controladores
+app.MapControllers();
 
+// --- FIM DA CONFIGURAÇÃO DO PIPELINE HTTP ---
+
+// Inicia a aplicação
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
