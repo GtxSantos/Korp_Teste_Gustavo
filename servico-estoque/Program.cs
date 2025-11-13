@@ -1,5 +1,5 @@
-// Localização: servico-estoque/Program.cs
-// (Substitua todo o conteúdo do seu Program.cs por este)
+// Arquivo: servico-estoque/Program.cs
+// Program de inicialização para o serviço de estoque (configura serviços, CORS e pipeline)
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularApp",
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200") // A porta padrão do Angular
+        policy.WithOrigins("http://localhost:4200", "http://localhost:3441") // Permite também a porta dev usada
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -39,8 +39,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Redireciona de HTTP para HTTPS (boa prática)
-app.UseHttpsRedirection();
+// Redireciona de HTTP para HTTPS somente em Development quando a porta HTTPS está configurada
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 // --- IMPORTANTE: Habilita o CORS ---
 app.UseCors("AllowAngularApp"); // Aplica a política que definimos

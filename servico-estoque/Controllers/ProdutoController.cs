@@ -1,29 +1,28 @@
-// Localização: servico-estoque/Controllers/ProdutoController.cs
+
+// Arquivo: servico-estoque/Controllers/ProdutoController.cs
 
 using Microsoft.AspNetCore.Mvc;
-using ServicoEstoque.Models; // Importa o "molde" que acabamos de criar
-using System.Collections.Concurrent; // Para um "banco de dados" em memória seguro
+using ServicoEstoque.Models; // Importo o modelo Produto usado por este serviço
+using System.Collections.Concurrent; // Uso um dicionário concorrente como armazenamento em memória
 
 namespace ServicoEstoque.Controllers
 {
     [ApiController]
-    // Este é o prefixo da URL para todos os endpoints deste controlador
-    // Conforme definimos no 'api_contratos.md'
+    // Defino o prefixo da URL para os endpoints deste controlador
     [Route("api/v1/estoque/produtos")]
     public class ProdutoController : ControllerBase
     {
-        // --- BANCO DE DADOS EM MEMÓRIA ---
-        // Para este teste, um "banco de dados" em memória (um dicionário estático)
-        // é a forma mais rápida e eficiente de implementar o backend.
-        // Usamos 'ConcurrentDictionary' para segurança em ambientes com múltiplas threads.
+    // --- ARMAZENAMENTO EM MEMÓRIA ---
+    // Para este teste mantenho um dicionário estático em memória.
+    // Uso 'ConcurrentDictionary' para segurança em cenários multithread.
         private static readonly ConcurrentDictionary<string, Produto> _produtos = new();
 
-        // --- ENDPOINTS DA API ---
+    // --- ENDPOINTS DA API ---
 
-        /**
-         * POST /api/v1/estoque/produtos
-         * Cria um novo produto.
-         */
+    /**
+     * POST /api/v1/estoque/produtos
+     * Crio um novo produto e retorno 201 com a entidade criada.
+     */
         [HttpPost]
         public IActionResult CriarProduto([FromBody] Produto novoProduto)
         {
@@ -32,45 +31,44 @@ namespace ServicoEstoque.Controllers
                 return BadRequest("Dados do produto inválidos.");
             }
 
-            // Define um ID único
+            // Gero um ID único
             novoProduto.Id = Guid.NewGuid().ToString("N");
             _produtos[novoProduto.Id] = novoProduto;
-
-            // Retorna 201 Created e o produto criado
+            // Retorno 201 Created com o produto criado
             return CreatedAtAction(nameof(GetProdutoPorId), new { id = novoProduto.Id }, novoProduto);
         }
 
-        /**
-         * GET /api/v1/estoque/produtos
-         * Lista todos os produtos.
-         */
+    /**
+     * GET /api/v1/estoque/produtos
+     * Retorno a lista de produtos armazenados.
+     */
         [HttpGet]
         public IActionResult GetProdutos()
         {
-            // Retorna a lista de todos os valores do nosso "banco"
+            // Retorno todos os produtos do armazenamento em memória
             return Ok(_produtos.Values.ToList());
         }
 
-        /**
-         * GET /api/v1/estoque/produtos/{id}
-         * Busca um produto específico pelo seu Id.
-         */
+    /**
+     * GET /api/v1/estoque/produtos/{id}
+     * Busco um produto pelo Id e retorno 200 ou 404.
+     */
         [HttpGet("{id}")]
         public IActionResult GetProdutoPorId(string id)
         {
             if (_produtos.TryGetValue(id, out var produto))
             {
-                // Encontrou o produto, retorna 200 OK
+                // Produto encontrado — retorno 200 OK
                 return Ok(produto);
             }
-            // Não encontrou, retorna 404 Not Found
+            // Produto não encontrado — retorno 404
             return NotFound(new { error = "Produto não encontrado" });
         }
 
-        /**
-         * PUT /api/v1/estoque/produtos/{id}/atualizar-saldo
-         * Atualiza o saldo de um produto (usado pelo Serviço de Faturamento).
-         */
+    /**
+     * PUT /api/v1/estoque/produtos/{id}/atualizar-saldo
+     * Atualizo o saldo de um produto (chamado pelo serviço de faturamento).
+     */
         [HttpPut("{id}/atualizar-saldo")]
         public IActionResult AtualizarSaldo(string id, [FromBody] AtualizarSaldoRequest request)
         {
@@ -79,20 +77,20 @@ namespace ServicoEstoque.Controllers
                 return NotFound(new { error = "Produto não encontrado" });
             }
 
-            // Calcula o novo saldo
+            // Calculo o novo saldo
             var novoSaldo = produto.Saldo + request.Quantidade;
 
-            // Validação de saldo (não pode ficar negativo)
+            // Validação: não permito saldo negativo
             if (novoSaldo < 0)
             {
                 return BadRequest(new { error = "Saldo insuficiente" });
             }
 
-            // Atualiza o saldo
+            // Atualizo e salvo o novo saldo
             produto.Saldo = novoSaldo;
-            _produtos[id] = produto; // Salva de volta no "banco"
+            _produtos[id] = produto;
 
-            return Ok(produto); // Retorna o produto com o saldo atualizado
+            return Ok(produto);
         }
     }
 

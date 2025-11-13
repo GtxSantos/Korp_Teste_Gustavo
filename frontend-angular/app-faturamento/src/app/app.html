@@ -1,0 +1,25 @@
+<!-- 1. A Barra de Navegação Superior (Toolbar) -->
+<mat-toolbar color="primary">
+  <span>Korp ERP - Teste Prático</span>
+
+  <!-- Um espaçador para jogar os links para a direita -->
+  <span class="spacer"></span>
+
+  <!-- Links de Navegação (ainda não funcionam, mas vamos criar) -->
+  <a mat-button routerLink="/produtos">
+    Cadastro de Produtos
+  </a>
+  <a mat-button routerLink="/notas">
+    Notas Fiscais
+  </a>
+</mat-toolbar>
+
+<!-- 2. O Contêiner de Conteúdo -->
+<div class="content-container">
+  <!-- 
+    Esta é a tag mais importante. 
+    O Angular vai carregar as páginas (componentes) 
+    de "Produtos" e "Notas Fiscais" aqui dentro.
+  -->
+  <router-outlet></router-outlet>
+</div>

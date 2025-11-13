@@ -1,0 +1,11 @@
+
+
+/* Faz o "spacer" na toolbar ocupar todo o espaço disponível */
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Adiciona um "respiro" (padding) para o nosso conteúdo */
+.content-container {
+  padding: 24px;
+}
