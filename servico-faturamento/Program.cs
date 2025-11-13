@@ -1,5 +1,10 @@
-// Localização: servico-faturamento/Program.cs
-// (Substitua todo o conteúdo do seu Program.cs por este)
+// Arquivo: servico-faturamento/Program.cs
+// Program de inicialização para o serviço de faturamento (configura serviços, CORS e pipeline)
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 

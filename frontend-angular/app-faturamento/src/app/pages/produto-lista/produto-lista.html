@@ -1,0 +1,39 @@
+<mat-card>
+	<mat-card-title>Cadastro de Produtos</mat-card-title>
+	<mat-card-content>
+		<form (submit)="criar(); $event.preventDefault()" class="prod-form">
+			<mat-form-field appearance="outline">
+				<mat-label>Código</mat-label>
+				<input matInput [(ngModel)]="novo.codigo" name="codigo" />
+			</mat-form-field>
+
+			<mat-form-field appearance="outline">
+				<mat-label>Descrição</mat-label>
+				<input matInput [(ngModel)]="novo.descricao" name="descricao" />
+			</mat-form-field>
+
+			<mat-form-field appearance="outline">
+				<mat-label>Saldo</mat-label>
+				<input matInput type="number" [(ngModel)]="novo.saldo" name="saldo" />
+			</mat-form-field>
+
+			<button mat-raised-button color="primary" type="submit">Criar</button>
+		</form>
+	</mat-card-content>
+</mat-card>
+
+<mat-card style="margin-top:16px">
+	<mat-card-title>Produtos cadastrados</mat-card-title>
+	<mat-card-content>
+		<div *ngFor="let p of produtos" class="produto-row">
+			<div>
+				<strong>{{p.codigo}}</strong> - {{p.descricao}}
+			</div>
+			<div>
+				<span>Saldo: {{p.saldo}}</span>
+				<button mat-mini-fab color="primary" (click)="ajustarSaldo(p, 1)">+1</button>
+				<button mat-mini-fab color="warn" (click)="ajustarSaldo(p, -1)">-1</button>
+			</div>
+		</div>
+	</mat-card-content>
+</mat-card>

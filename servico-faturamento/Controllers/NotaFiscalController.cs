@@ -1,4 +1,4 @@
-// Localização: servico-faturamento/Controllers/NotaFiscalController.cs
+// Arquivo: servico-faturamento/Controllers/NotaFiscalController.cs
 
 using Microsoft.AspNetCore.Mvc;
 using ServicoFaturamento.Models; // Importa nossos modelos
@@ -18,8 +18,8 @@ namespace ServicoFaturamento.Controllers
 
         // --- URL DO MICROSSERVIÇO DE ESTOQUE ---
         // IMPORTANTE: Este deve ser o URL onde seu 'servico-estoque' está rodando!
-        // (O seu 'dotnet run' anterior mostrou http://localhost:5125)
-        private const string _servicoEstoqueUrl = "http://localhost:5125";
+    // (O seu 'dotnet run' anterior mostrou o estoque rodando em http://localhost:5000)
+    private const string _servicoEstoqueUrl = "http://localhost:5000";
 
 
         private readonly IHttpClientFactory _httpClientFactory;

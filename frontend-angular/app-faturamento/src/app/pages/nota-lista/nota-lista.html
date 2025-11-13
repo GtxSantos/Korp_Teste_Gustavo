@@ -1,0 +1,41 @@
+<mat-card>
+	<mat-card-title>Notas Fiscais</mat-card-title>
+	<mat-card-content>
+		<div *ngIf="error" class="error">Erro: {{error}}</div>
+		<div *ngIf="loading">Processando...</div>
+
+		<form (submit)="criarNota(); $event.preventDefault()" class="nota-form">
+			<div *ngFor="let item of itensForm; let i = index" class="nota-item-row">
+				<mat-form-field appearance="outline">
+					<mat-label>Produto</mat-label>
+					<mat-select [(ngModel)]="itensForm[i].produtoId" name="produto-{{i}}">
+						<mat-option [value]="''">-- selecione --</mat-option>
+						<mat-option *ngFor="let p of produtos" [value]="p.id">{{p.codigo}} - {{p.descricao}} (saldo: {{p.saldo}})</mat-option>
+					</mat-select>
+				</mat-form-field>
+
+				<mat-form-field appearance="outline">
+					<mat-label>Quantidade</mat-label>
+					<input matInput type="number" [(ngModel)]="itensForm[i].quantidade" name="quant-{{i}}" min="1" />
+				</mat-form-field>
+
+				<button mat-button color="warn" type="button" (click)="removerLinha(i)">Remover</button>
+			</div>
+
+			<button mat-stroked-button type="button" (click)="adicionarLinha()">Adicionar item</button>
+			<button mat-raised-button color="primary" type="submit">Criar nota</button>
+		</form>
+	</mat-card-content>
+</mat-card>
+
+<mat-card style="margin-top:16px">
+	<mat-card-title>Notas existentes</mat-card-title>
+	<mat-card-content>
+		<div *ngFor="let n of notas" class="nota-row">
+			<div>Nº {{n.numero}} - {{n.status}} - Itens: {{n.itens.length}}</div>
+			<div>
+				<button mat-raised-button color="primary" (click)="imprimir(n)" [disabled]="n.status !== 'Aberta'">Imprimir</button>
+			</div>
+		</div>
+	</mat-card-content>
+</mat-card>

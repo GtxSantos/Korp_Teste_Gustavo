@@ -1,4 +1,4 @@
-// Localização: servico-faturamento/Models/NotaFiscal.cs
+// Arquivo: servico-faturamento/Models/NotaFiscal.cs
 
 using System.Text.Json.Serialization;
 
